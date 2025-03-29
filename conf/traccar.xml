@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
+<properties>
+    <!-- Configuração do banco de dados -->
+    <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
+    <entry key='database.url'>jdbc:mysql://localhost:3306/traccar?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC</entry>
+    <entry key='database.user'>root</entry>
+    <entry key='database.password'>Const@75#</entry>
+
+    <!-- Configuração  osmand -->
+    <entry key='osmand.enable'>true</entry>
+    <entry key='osmand.port'>5055</entry>
+    <entry key='web.port'>8082</entry>
+    <entry key='web.registration'>true</entry> <!-- Habilitar registro de novos usuários -->
+
+    <entry key='event.forward.url'>http://localhost:8282/api/traccar-event</entry>
+    
+</properties>
