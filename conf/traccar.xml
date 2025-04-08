@@ -2,17 +2,62 @@
 <!DOCTYPE properties SYSTEM 'http://java.sun.com/dtd/properties.dtd'>
 <properties>
     <!-- Configuração do banco de dados -->
+    <entry key='database.type'>mysql</entry>
     <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
     <entry key='database.url'>jdbc:mysql://localhost:3306/traccar?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC</entry>
     <entry key='database.user'>root</entry>
-    <entry key='database.password'>Const@75#</entry>
+    <entry key='database.password'></entry>
+    <entry key='web.registration'>true</entry> <!-- Habilitar registro de novos usuários -->
 
-    <!-- Configuração  osmand -->
+    <!-- Configuração osmand -->
     <entry key='osmand.enable'>true</entry>
     <entry key='osmand.port'>5055</entry>
     <entry key='web.port'>8082</entry>
-    <entry key='web.registration'>true</entry> <!-- Habilitar registro de novos usuários -->
+  
+    <!-- Configuração de notificações -->
+    <entry key='event.enable'>true</entry>
+    <entry key='event.forward'>true</entry>
+    <entry key='notifications.enable'>true</entry>
 
-    <entry key='event.forward.url'>http://localhost:8282/api/traccar-event</entry>
-    
+     <!-- Configuração para notificação imediata -->
+    <entry key='notification.types'>deviceOnline,deviceOffline,deviceUnknown,igitionOn,ignitionOff</entry>
+
+    <!-- Configuração de timeout para dispositivos -->
+    <entry key='status.timeout'>1800</entry> <!-- Considera offline após 30 minutos sem dados (1800 segundos) -->
+    <entry key='web.timeout'>600</entry> <!-- Timeout de inatividade da sessão web (10 min) -->
+    <entry key='web.disconnectTimeout'>60</entry> <!-- Tempo extra após desconexão do WS -->
+
+    <!-- Configuração de eventos -->
+    <entry key='event.ignitionOn'>true</entry>
+    <entry key='event.ignitionOff'>true</entry>
+    <entry key='event.geofenceEnter'>true</entry>
+    <entry key='event.geofenceExit'>true</entry>
+    <entry key='event.deviceMoving'>true</entry>
+    <entry key='event.deviceStopped'>true</entry>
+    <entry key='event.deviceOnline'>true</entry>
+    <entry key='event.deviceOffline'>true</entry>
+    <entry key='event.deviceUnknown'>true</entry>
+
+    <!-- Configuração para processamento em tempo real -->
+    <entry key='processing.checkDeviceEnabled'>true</entry>
+    <entry key='processing.remoteAddress.enable'>true</entry>
+    <entry key='processing.copyAttributes.enable'>true</entry>
+    <entry key='processing.computedAttributes.enable'>true</entry>
+    <entry key='processing.engineHours.enable'>true</entry>
+    <entry key='processing.peripheralSensorData.enable'>true</entry>
+
+
+    <!-- Configuração para encaminhamento de eventos -->
+    <entry key='event.forward.enable'>true</entry>
+    <entry key='event.forward.retry'>true</entry>
+    <entry key='event.forward.url'>http://localhost:3000/api/traccar-event</entry>
+
+    <!-- Configuração para melhorar a reatividade -->
+    <entry key='server.timeout'>1800</entry> <!--Timeout para conexões do servidor (30 minutos) -->
+    <entry key='database.maxPoolSize'>20</entry> <!-- Aumentar o tamanho do pool de conexões -->
+    <entry key='database.refreshDelay'>60</entry> <!-- Atualizar dados a cada 60 segundos -->
+
+    <!-- LOGS  -->
+    <entry key='logger.console'>true</entry>
+    <!-- <entry key='logger.level'>ALL</entry> Aumentar nível de log para depuração -->
 </properties>
