@@ -13,14 +13,18 @@
     <entry key='osmand.enable'>true</entry>
     <entry key='osmand.port'>5055</entry>
     <entry key='web.port'>8082</entry>
+
+    <!-- Configuração protocolo gt06 -->
+    <entry key='gt06.port'>5023</entry>
+    <entry key='gt06.enable'>true</entry>
   
     <!-- Configuração de notificações -->
     <entry key='event.enable'>true</entry>
     <entry key='event.forward'>true</entry>
     <entry key='notifications.enable'>true</entry>
 
-     <!-- Configuração para notificação imediata -->
-    <entry key='notification.types'>deviceOnline,deviceOffline,deviceUnknown,igitionOn,ignitionOff</entry>
+    <!-- Configuração para notificação imediata -->
+    <entry key='notification.types'>deviceOnline,deviceOffline,deviceUnknown,ignitionOn,ignitionOff</entry>
 
     <!-- Configuração de timeout para dispositivos -->
     <entry key='status.timeout'>1800</entry> <!-- Considera offline após 30 minutos sem dados (1800 segundos) -->
@@ -45,6 +49,15 @@
     <entry key='processing.computedAttributes.enable'>true</entry>
     <entry key='processing.engineHours.enable'>true</entry>
     <entry key='processing.peripheralSensorData.enable'>true</entry>
+    <entry key='processing.engineHours.enable'>true</entry>
+    <entry key='processing.geofence.enable'>true</entry>
+    <entry key='processing.geofence.radius'>100</entry>
+    <entry key='processing.distance.enable'>true</entry>
+    <entry key='processing.distance.radius'>100</entry>
+    <entry key='processing.speed.enable'>true</entry>
+    <entry key='processing.speed.radius'>100</entry>
+    <entry key='processing.fuelConsumption.enable'>true</entry>
+    <entry key='processing.fuelConsumption.radius'>100</entry>
 
 
     <!-- Configuração para encaminhamento de eventos -->

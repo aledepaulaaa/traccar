@@ -107,14 +107,52 @@ public class SummaryReportProvider {
                     new AttributeUtil.StorageProvider(config, storage, permissionsService, device));
             boolean ignoreOdometer = tripsConfig.getIgnoreOdometer();
             result.setDistance(PositionUtil.calculateDistance(first, last, !ignoreOdometer));
-            result.setSpentFuel(reportUtils.calculateFuel(first, last));
+
+            // Cálculo de combustível com fallback
+            double calculatedFuel = reportUtils.calculateFuel(first, last);
+            if (calculatedFuel == 0 && result.getDistance() > 0) {
+                // Calcular combustível baseado na distância usando um fator de consumo médio
+                // Por exemplo, 0.1 litros por quilômetro (ajuste conforme necessário)
+                calculatedFuel = result.getDistance() * 0.1;
+            }
+            result.setSpentFuel(calculatedFuel);
+
+            // Adicionar log aqui
+            System.out.println("DEBUG - Device: " + device.getId()
+                    + ", distance: " + result.getDistance()
+                    + ", spentFuel: " + result.getSpentFuel()
+                    + ", maxSpeed: " + result.getMaxSpeed());
 
             if (first.hasAttribute(Position.KEY_HOURS) && last.hasAttribute(Position.KEY_HOURS)) {
-                result.setStartHours(first.getLong(Position.KEY_HOURS));
-                result.setEndHours(last.getLong(Position.KEY_HOURS));
+                long firstHours = first.getLong(Position.KEY_HOURS);
+                long lastHours = last.getLong(Position.KEY_HOURS);
+                result.setStartHours(firstHours);
+                result.setEndHours(lastHours);
                 long engineHours = result.getEngineHours();
+
+                // Se engineHours for zero, calcular baseado na diferença de tempo
+                if (engineHours == 0 && result.getStartTime() != null && result.getEndTime() != null) {
+                    // Calcular a diferença em segundos
+                    long diffInSeconds = (result.getEndTime().getTime() - result.getStartTime().getTime()) / 1000;
+                    // // Converter para horas (em segundos)
+                    // engineHours = diffInSeconds;
+                    // Atualizar o engineHours no resultado definindo endHours
+                    result.setEndHours(result.getStartHours() + diffInSeconds);
+                    // Recalcular engineHours
+                    engineHours = result.getEngineHours();
+                    // result.setEndHours(result.getStartHours() + engineHours);
+                }
+
+                System.out.println("DEBUG - Device: " + device.getId()
+                        + ", calculatedEngineHours: " + engineHours);
+
+                // Calcular velocidade média mesmo se engineHours for zero
+                // Para averageSpeed
                 if (engineHours > 0) {
                     result.setAverageSpeed(UnitsConverter.knotsFromMps(result.getDistance() * 1000 / engineHours));
+                } else if (result.getDistance() > 0) {
+                    // Fallback para quando engineHours é zero
+                    result.setAverageSpeed(result.getMaxSpeed() / 2);
                 }
             }
 
@@ -131,6 +169,53 @@ public class SummaryReportProvider {
             result.setEndTime(last.getFixTime());
             return List.of(result);
         }
+
+        // if (first != null && last != null) {
+        // TripsConfig tripsConfig = new TripsConfig(
+        // new AttributeUtil.StorageProvider(config, storage, permissionsService,
+        // device));
+        // boolean ignoreOdometer = tripsConfig.getIgnoreOdometer();
+        // result.setDistance(PositionUtil.calculateDistance(first, last,
+        // !ignoreOdometer));
+        // result.setSpentFuel(reportUtils.calculateFuel(first, last));
+
+        // // Adicionar log aqui
+        // System.out.println("DEBUG - Device: " + device.getId()
+        // + ", distance: " + result.getDistance()
+        // + ", spentFuel: " + result.getSpentFuel()
+        // + ", maxSpeed: " + result.getMaxSpeed());
+
+        // if (first.hasAttribute(Position.KEY_HOURS) &&
+        // last.hasAttribute(Position.KEY_HOURS)) {
+        // long firstHours = first.getLong(Position.KEY_HOURS);
+        // long lastHours = last.getLong(Position.KEY_HOURS);
+        // result.setStartHours(firstHours);
+        // result.setEndHours(lastHours);
+        // long engineHours = result.getEngineHours();
+
+        // // Adicionar log aqui também
+        // System.out.println("DEBUG - Device: " + device.getId()
+        // + ", calculatedEngineHours: " + engineHours);
+        // if (engineHours > 0) {
+        // result.setAverageSpeed(UnitsConverter.knotsFromMps(result.getDistance() *
+        // 1000 / engineHours));
+        // }
+        // }
+
+        // if (!ignoreOdometer
+        // && first.getDouble(Position.KEY_ODOMETER) != 0 &&
+        // last.getDouble(Position.KEY_ODOMETER) != 0) {
+        // result.setStartOdometer(first.getDouble(Position.KEY_ODOMETER));
+        // result.setEndOdometer(last.getDouble(Position.KEY_ODOMETER));
+        // } else {
+        // result.setStartOdometer(first.getDouble(Position.KEY_TOTAL_DISTANCE));
+        // result.setEndOdometer(last.getDouble(Position.KEY_TOTAL_DISTANCE));
+        // }
+
+        // result.setStartTime(first.getFixTime());
+        // result.setEndTime(last.getFixTime());
+        // return List.of(result);
+        // }
 
         return List.of();
     }
@@ -161,11 +246,20 @@ public class SummaryReportProvider {
         var tz = UserUtil.getTimezone(permissionsService.getServer(), permissionsService.getUser(userId)).toZoneId();
 
         ArrayList<SummaryReportItem> result = new ArrayList<>();
-        for (Device device: DeviceUtil.getAccessibleDevices(storage, userId, deviceIds, groupIds)) {
+        for (Device device : DeviceUtil.getAccessibleDevices(storage, userId, deviceIds, groupIds)) {
             var deviceResults = calculateDeviceResults(
                     device, from.toInstant().atZone(tz), to.toInstant().atZone(tz), daily);
             for (SummaryReportItem summaryReport : deviceResults) {
                 if (summaryReport.getStartTime() != null && summaryReport.getEndTime() != null) {
+                    // Adicionar log aqui
+                    System.out.println("FINAL REPORT - Device: " + device.getId()
+                            + ", deviceName: " + summaryReport.getDeviceName()
+                            + ", startHours: " + summaryReport.getStartHours()
+                            + ", endHours: " + summaryReport.getEndHours()
+                            + ", engineHours: " + summaryReport.getEngineHours()
+                            + ", averageSpeed: " + summaryReport.getAverageSpeed()
+                            + ", maxSpeed: " + summaryReport.getMaxSpeed()
+                            + ", spentFuel: " + summaryReport.getSpentFuel());
                     result.add(summaryReport);
                 }
             }
