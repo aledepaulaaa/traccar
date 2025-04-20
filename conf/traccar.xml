@@ -6,7 +6,7 @@
     <entry key='database.driver'>com.mysql.cj.jdbc.Driver</entry>
     <entry key='database.url'>jdbc:mysql://localhost:3306/traccar?allowPublicKeyRetrieval=true&amp;useSSL=false&amp;serverTimezone=UTC</entry>
     <entry key='database.user'>root</entry>
-    <entry key='database.password'></entry>
+    <entry key='database.password'>Const@75#</entry>
     <entry key='web.registration'>true</entry> <!-- Habilitar registro de novos usuários -->
 
     <!-- Configuração osmand -->
